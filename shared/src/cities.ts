@@ -111,9 +111,9 @@ const intro = {
     zoom: 11.6,
     aliases: ["phuquoc", "phu quoc"],
     introVi:
-      "Phú Quốc là đảo lớn phía tây nam, bãi dài, hoàng hôn rộng và nước đổi màu theo từng bờ. Phía bắc vắng hơn; phía nam có thị trấn Dương Đông và chợ đêm. Ở lại một bãi đến khi trời chuyển cam là đủ cho một ngày.",
+      "Phú Quốc là đảo lớn phía tây nam, bãi dài, hoàng hôn rộng và nước đổi màu theo từng bờ. Phía bắc vắng hơn; bờ tây có thị trấn Dương Đông và chợ đêm. Ở lại một bãi đến khi trời chuyển cam là đủ cho một ngày.",
     introEn:
-      "Phu Quoc is a large island in the southwest, with long beaches, wide sunsets, and water that changes from shore to shore. The north is quieter; the south has Duong Dong town and a night market. Staying on one beach until the sky turns amber fills a day.",
+      "Phu Quoc is a large island in the southwest, with long beaches, wide sunsets, and water that changes from shore to shore. The north is quieter; the west coast has Duong Dong town and a night market. Staying on one beach until the sky turns amber fills a day.",
   },
   "sa-pa": {
     nameVi: "Sa Pa",
