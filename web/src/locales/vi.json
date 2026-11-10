@@ -48,6 +48,79 @@
   "geoUnavailable": "Trình duyệt này không chia sẻ được vị trí.",
   "loadingPlaces": "Đang tải địa điểm…",
   "credit": "Dữ liệu bản đồ © cộng tác viên OpenStreetMap (ODbL) · nền OpenFreeMap · thời tiết Open-Meteo",
+  "customArea": "Tìm theo vùng vẽ",
+  "customAreaOn": "Đang vẽ",
+  "drawHint": "Nhấn và kéo. Thả gần điểm bắt đầu để khép vùng. Bản đồ không kéo được; lăn chuột để phóng to.",
+  "drawOpen": "Nét vừa rồi chưa khép. Thả gần điểm bắt đầu, hoặc vẽ lại.",
+  "drawTiny": "Vùng này hơi nhỏ. Vẽ một vòng rộng hơn.",
+  "clearArea": "Xoá vùng",
+  "areaResults": "Trong vùng vừa vẽ",
+  "vehiclesNav": "Đi lại",
+  "errors": {
+    "area_too_large": "Vùng này rộng quá so với một lần tìm miễn phí. Vẽ nhỏ lại để máy chủ bản đồ kịp trả lời.",
+    "area_too_small": "Vùng này nhỏ quá để tìm. Vẽ rộng thêm một chút.",
+    "area_outside": "Hãy vẽ trong lãnh thổ Việt Nam. Bản đồ này chỉ tìm trong nước.",
+    "bad_poly": "Vẽ một vùng khép kín, rồi thả gần điểm bạn bắt đầu."
+  },
+  "stations": {
+    "airport": "Sân bay",
+    "train": "Ga tàu",
+    "bus": "Bến xe"
+  },
+  "vehicles": {
+    "title": "Cách đi",
+    "back": "Về bản đồ",
+    "from": "Đi từ",
+    "to": "Đến",
+    "date": "Ngày",
+    "city": "Thành phố",
+    "other": "Thành phố khác, chọn trên trang của họ",
+    "partnerNote": "Nhà xe, hạng ghế, giá, giờ chạy, thời gian và điểm dừng nằm trên trang đối tác. theHaofTravelo không bán vé và không nêu giá.",
+    "openSite": "Mở trang",
+    "prefill": {
+      "route-date": "Đã điền tuyến và ngày",
+      "route": "Đã điền tuyến",
+      "none": "Mở trang tìm của họ"
+    },
+    "notes": {
+      "date-on-site": "Chọn ngày trên trang của họ. Liên kết không mang theo ngày.",
+      "link-only": "Trang này không nhận tuyến và ngày trong liên kết.",
+      "no-pickup": "Mở ứng dụng hoặc website. Điểm đón không được điền sẵn.",
+      "same-place": "Chọn hai nơi khác nhau thì tuyến mới được điền.",
+      "other-city": "Thành phố ngoài mười một nơi này được chọn trên trang đối tác.",
+      "no-rail": "Nơi này không có ga trên đường sắt Bắc–Nam. Xem phía đối tác còn bán gì.",
+      "airports": "Chuyến bay dùng {{from}} → {{to}}.",
+      "nearest": "{{place}} dùng {{airport}} ({{iata}}).",
+      "vanDon": "Bay tới Hạ Long là vào Vân Đồn (VDO), cách vịnh khoảng một giờ.",
+      "sameAirport": "Hai nơi dùng chung một sân bay, nên ô tìm để trống."
+    },
+    "modes": {
+      "bus": "Xe buýt",
+      "taxi": "Taxi",
+      "coach": "Xe khách",
+      "flight": "Máy bay",
+      "train": "Tàu hỏa"
+    },
+    "partners": {
+      "vexere": "Vexere",
+      "12go": "12Go",
+      "dsvn": "Đường sắt Việt Nam",
+      "baolau": "Baolau",
+      "vietnam-airlines": "Vietnam Airlines",
+      "vietjet": "Vietjet",
+      "bamboo": "Bamboo Airways",
+      "google-flights": "Google Flights",
+      "grab": "Grab",
+      "xanh": "Xanh SM",
+      "be": "Be"
+    },
+    "busLead": "Tuyến xe buýt được gắn trên OpenStreetMap trong thành phố này. Không phải tuyến nào cũng có trên bản đồ.",
+    "busEmpty": "Khu này chưa có tuyến buýt nào được gắn.",
+    "busLoading": "Đang tải tuyến buýt…",
+    "busInfo": "Thông tin xe buýt",
+    "busNoInfo": "Chưa có trang xe buýt riêng để gắn cho nơi này.",
+    "busIgnored": "Xe buýt dùng thành phố ở trên. Ngày và thành phố kia dành cho các tab khác."
+  },
   "categories": {
     "restaurants": "Ăn uống",
     "homestays": "Homestay",
@@ -55,6 +128,7 @@
     "shops": "Cửa hàng",
     "gas": "Xăng",
     "hospitals": "Y tế",
+    "stations": "Nhà ga",
     "search": "Tìm kiếm"
   },
   "weather": {

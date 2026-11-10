@@ -1,6 +1,19 @@
 import type { Place } from "@shared/places";
 import { buildMapLink } from "@shared/deeplink";
 
+export function shownError(error: string, translate: (key: string) => string): string {
+  if (error === "geo") return translate("geoUnavailable");
+  if (error === "geo-denied") return translate("geoDenied");
+  if (error === "area_too_large" || error === "area_too_small" || error === "area_outside" || error === "bad_poly") {
+    return translate(`errors.${error}`);
+  }
+  return error;
+}
+
+export function isStationKind(kind: string | undefined): kind is "airport" | "train" | "bus" {
+  return kind === "airport" || kind === "train" || kind === "bus";
+}
+
 export function placeTitle(place: Place, language: string, unnamed: string): string {
   if (language.startsWith("vi") && place.nameVi) return place.nameVi;
   if (language.startsWith("en") && place.nameEn) return place.nameEn;

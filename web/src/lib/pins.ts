@@ -70,6 +70,23 @@ function drawGlyph(ctx: CanvasRenderingContext2D, kind: string) {
     ctx.fillRect(16, 28, 32, 8);
     return;
   }
+  if (kind === "stations") {
+    ctx.beginPath();
+    ctx.moveTo(18, 30);
+    ctx.lineTo(32, 16);
+    ctx.lineTo(46, 30);
+    ctx.stroke();
+    ctx.strokeRect(22, 30, 20, 14);
+    ctx.beginPath();
+    ctx.moveTo(16, 48);
+    ctx.lineTo(48, 48);
+    ctx.moveTo(26, 48);
+    ctx.lineTo(26, 42);
+    ctx.moveTo(38, 48);
+    ctx.lineTo(38, 42);
+    ctx.stroke();
+    return;
+  }
   ctx.beginPath();
   ctx.arc(28, 28, 10, 0, Math.PI * 2);
   ctx.stroke();

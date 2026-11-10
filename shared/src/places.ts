@@ -18,25 +18,55 @@ export type Place = {
 
 const PER_CATEGORY_CAP = 10;
 
+export type StationKind = "airport" | "train" | "bus";
+
+export function stationKind(tags: Record<string, string | undefined>): StationKind | null {
+  if (tags.aeroway === "aerodrome") return "airport";
+  if (tags.railway === "station") return "train";
+  if (tags.amenity === "bus_station") return "bus";
+  return null;
+}
+
+export function isPublicStation(tags: Record<string, string | undefined>): boolean {
+  if (tags.disused === "yes" || tags.abandoned === "yes") return false;
+  const kind = stationKind(tags);
+  if (!kind) return true;
+  if (kind === "airport") {
+    if (tags.military) return false;
+    const access = tags.access;
+    if (access === "private" || access === "no" || access === "military") return false;
+    const use = tags.aerodrome || tags["aerodrome:type"];
+    if (use === "military" || use === "private") return false;
+    return true;
+  }
+  if (kind === "train") {
+    if (tags.station === "subway" || tags.subway === "yes") return false;
+    return true;
+  }
+  return true;
+}
+
 export function placesFromOverpass(payload: OverpassResponse): Place[] {
   const seen = new Set<string>();
   const counts = new Map<string, number>();
   const places: Place[] = [];
 
   for (const element of payload.elements ?? []) {
-    if (element.type !== "node" && element.type !== "way") continue;
+    if (element.type !== "node" && element.type !== "way" && element.type !== "relation") continue;
     const lat = element.lat ?? element.center?.lat;
     const lng = element.lon ?? element.center?.lon;
     if (lat == null || lng == null) continue;
     const tags = element.tags ?? {};
     const category = classifyTags(tags);
     if (!category) continue;
+    if (category === "stations" && !isPublicStation(tags)) continue;
     const id = `${element.type}/${element.id}`;
     if (seen.has(id)) continue;
     const used = counts.get(category) ?? 0;
     if (used >= PER_CATEGORY_CAP) continue;
     seen.add(id);
     counts.set(category, used + 1);
+    const station = category === "stations" ? stationKind(tags) : null;
     places.push({
       id,
       name: tags.name || tags["name:en"] || tags["name:vi"] || "",
@@ -47,7 +77,7 @@ export function placesFromOverpass(payload: OverpassResponse): Place[] {
       lng,
       opening_hours: cleanTag(tags.opening_hours, 300),
       phone: cleanTag(tags.phone || tags["contact:phone"] || tags["contact:mobile"], 40),
-      kind: tags.cuisine || tags.amenity || tags.tourism || tags.shop,
+      kind: station ?? (tags.cuisine || tags.amenity || tags.tourism || tags.shop),
     });
   }
 
