@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+  --color-lantern: #e39b12;
+  --color-lantern-deep: #9a6408;
+  --color-lotus: #e07a90;
+  --color-jungle: #1f7a4d;
+  --color-amberglow: #f5b942;
+  --color-ink: #2a2118;
+  --color-cream: #fff8ef;
+  --color-sand: #f0e2d0;
+  --color-muted: #6f6256;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #efe4d4;
+  color: var(--color-ink);
+}
+
+.dark body {
+  background: #120e0c;
+  color: #fff8ef;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+.maplibregl-ctrl-top-right {
+  top: 72px;
+  right: 8px;
+}
+
+.maplibregl-ctrl-attrib {
+  font-size: 11px;
+  background: rgba(255, 248, 239, 0.92) !important;
+  color: #4e4338;
+}
+
+.dark .maplibregl-ctrl-attrib {
+  background: rgba(28, 22, 18, 0.92) !important;
+  color: #f0e2d0;
+}
+
+.dark .maplibregl-ctrl-attrib a {
+  color: #f5b942;
+}
+
+.maplibregl-popup-content {
+  background: #fff8ef;
+  color: #2a2118;
+  border-radius: 18px;
+  padding: 12px 14px 14px;
+  box-shadow: 0 16px 40px rgba(42, 33, 24, 0.2);
+  min-width: 220px;
+}
+
+.dark .maplibregl-popup-content {
+  background: #2a211c;
+  color: #fff8ef;
+}
+
+.maplibregl-popup-close-button {
+  font-size: 20px;
+  width: 28px;
+  height: 28px;
+  line-height: 24px;
+  color: inherit;
+  right: 4px;
+  top: 4px;
+}
+
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+  border-top-color: #fff8ef;
+}
+
+.dark .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+  border-top-color: #2a211c;
+}
+
+.city-pin {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.city-pin-core {
+  position: absolute;
+  inset: 7px;
+  border-radius: 999px;
+  background: #f5b942;
+  box-shadow:
+    0 0 0 2px #fffaf3,
+    0 0 14px 4px rgba(245, 185, 66, 0.95);
+}
+
+.city-pin-halo {
+  position: absolute;
+  inset: 2px;
+  border-radius: 999px;
+  background: rgba(245, 185, 66, 0.45);
+  animation: halo 2.4s ease-out infinite;
+}
+
+@keyframes halo {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .city-pin-halo {
+    animation: none;
+    opacity: 0.45;
+  }
+}
+
+@media (max-width: 767px) {
+  .maplibregl-ctrl-bottom-right {
+    bottom: calc(46vh + 8px);
+  }
+}
+
+.sheet-open .maplibregl-ctrl-bottom-right {
+  bottom: calc(82vh + 8px);
+}
