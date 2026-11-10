@@ -48,6 +48,79 @@
   "geoUnavailable": "This browser cannot share your location.",
   "loadingPlaces": "Loading places…",
   "credit": "Map data © OpenStreetMap contributors (ODbL) · tiles by OpenFreeMap · weather by Open-Meteo",
+  "customArea": "Custom area find",
+  "customAreaOn": "Drawing",
+  "drawHint": "Press and drag. Release near the start to close the shape. The map will not pan; scroll to zoom.",
+  "drawOpen": "That stroke did not close. Release near the starting point, or draw again.",
+  "drawTiny": "That shape is too small. Draw a wider loop.",
+  "clearArea": "Clear shape",
+  "areaResults": "Inside the shape",
+  "vehiclesNav": "Vehicles",
+  "errors": {
+    "area_too_large": "That area is too large for a free search. Draw a smaller shape so the map service can answer.",
+    "area_too_small": "That shape is too small to search. Draw a slightly larger one.",
+    "area_outside": "Draw inside Vietnam. This map only searches the country.",
+    "bad_poly": "Draw a closed shape, then release near the point where you started."
+  },
+  "stations": {
+    "airport": "Airport",
+    "train": "Train station",
+    "bus": "Bus station"
+  },
+  "vehicles": {
+    "title": "Ways to go",
+    "back": "Back to the map",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "city": "City",
+    "other": "Another city, on their site",
+    "partnerNote": "Operator, class, price, times, duration and stops are shown on the partner site. theHaofTravelo does not sell tickets or list fares.",
+    "openSite": "Open site",
+    "prefill": {
+      "route-date": "Route and date filled in",
+      "route": "Route filled in",
+      "none": "Opens their search"
+    },
+    "notes": {
+      "date-on-site": "Choose the date on their site. The link does not carry it.",
+      "link-only": "This site does not accept a route and date in the link.",
+      "no-pickup": "Opens the app or website. Pickup is not filled in.",
+      "same-place": "Pick two different places to fill the route.",
+      "other-city": "Cities outside the eleven are chosen on the partner site.",
+      "no-rail": "This place is not on the North–South railway. See what the partner sells.",
+      "airports": "Flights use {{from}} → {{to}}.",
+      "nearest": "{{place}} uses {{airport}} ({{iata}}).",
+      "vanDon": "Hạ Long flights use Vân Đồn (VDO), about an hour from the bay.",
+      "sameAirport": "Both places share an airport, so the search is left blank."
+    },
+    "modes": {
+      "bus": "City bus",
+      "taxi": "Taxi",
+      "coach": "Long-distance bus",
+      "flight": "Flight",
+      "train": "Train"
+    },
+    "partners": {
+      "vexere": "Vexere",
+      "12go": "12Go",
+      "dsvn": "Vietnam Railways",
+      "baolau": "Baolau",
+      "vietnam-airlines": "Vietnam Airlines",
+      "vietjet": "Vietjet",
+      "bamboo": "Bamboo Airways",
+      "google-flights": "Google Flights",
+      "grab": "Grab",
+      "xanh": "Xanh SM",
+      "be": "Be"
+    },
+    "busLead": "Bus lines tagged in OpenStreetMap for this city. Not every route is mapped.",
+    "busEmpty": "No bus routes are tagged in this part of the city yet.",
+    "busLoading": "Loading bus routes…",
+    "busInfo": "City bus info",
+    "busNoInfo": "No separate city bus page is linked for this place.",
+    "busIgnored": "City buses use the city above. The date and the other city stay for the other tabs."
+  },
   "categories": {
     "restaurants": "Eat",
     "homestays": "Homestays",
@@ -55,6 +128,7 @@
     "shops": "Shops",
     "gas": "Fuel",
     "hospitals": "Care",
+    "stations": "Stations",
     "search": "Search"
   },
   "weather": {

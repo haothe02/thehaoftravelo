@@ -6,11 +6,15 @@ export function Header({
   onTheme,
   onFeedback,
   onHome,
+  onVehicles,
+  vehiclesActive = false,
 }: {
   theme: Theme;
   onTheme: () => void;
   onFeedback: () => void;
   onHome: () => void;
+  onVehicles: () => void;
+  vehiclesActive?: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage?.startsWith("vi") ? "vi" : "en";
@@ -18,10 +22,23 @@ export function Header({
   return (
     <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-2 border-b border-sand/80 bg-cream/85 px-3 backdrop-blur-md md:gap-4 md:px-5 dark:border-white/10 dark:bg-[#1a1410]/85">
       <button type="button" onClick={onHome} className="min-w-0 shrink text-left">
-        <span className="font-display block truncate text-[1.15rem] leading-none tracking-tight text-ink sm:text-[1.45rem] md:text-[1.7rem] dark:text-cream">
+        <span className="font-display block truncate text-base leading-none tracking-tight text-ink sm:text-[1.45rem] md:text-[1.7rem] dark:text-cream">
           <span className="text-lantern italic">the</span>HaofTravelo
         </span>
         <span className="mt-1 hidden text-xs tracking-wide text-muted md:block dark:text-sand/80">{t("tagline")}</span>
+      </button>
+      <button
+        type="button"
+        data-testid="vehicles-link"
+        onClick={onVehicles}
+        aria-current={vehiclesActive ? "page" : undefined}
+        className={`rounded-full px-1.5 py-1 text-[11px] font-semibold md:px-3 md:py-1.5 md:text-xs ${
+          vehiclesActive
+            ? "bg-ink text-cream dark:bg-amberglow dark:text-ink"
+            : "border border-sand text-ink dark:border-white/15 dark:text-cream"
+        }`}
+      >
+        {t("vehiclesNav")}
       </button>
       <div className="ml-auto flex shrink-0 items-center gap-1 md:gap-2">
         <div className="flex rounded-full bg-sand/80 p-0.5 md:p-1 dark:bg-white/10" role="group" aria-label={t("language")}>

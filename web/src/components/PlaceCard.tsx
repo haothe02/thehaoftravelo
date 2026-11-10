@@ -2,7 +2,7 @@ import { isAlwaysOpen } from "@shared/openingHours";
 import type { Place } from "@shared/places";
 import { CATEGORIES, SEARCH_COLOR } from "@shared/categories";
 import { useTranslation } from "react-i18next";
-import { directionsUrl, placeTitle, sharePlace, telHref } from "../lib/format";
+import { directionsUrl, isStationKind, placeTitle, sharePlace, telHref } from "../lib/format";
 
 function colorFor(category: string): string {
   return CATEGORIES.find((item) => item.id === category)?.color ?? SEARCH_COLOR;
@@ -29,6 +29,7 @@ export function PlaceCard({
           <h3 className="font-display text-lg leading-tight">{title}</h3>
           <p className="text-xs tracking-wide text-muted uppercase dark:text-sand/70">
             {t(`categories.${place.category}`)}
+            {place.category === "stations" && isStationKind(place.kind) ? ` · ${t(`stations.${place.kind}`)}` : ""}
             {badge ? <span className="ml-2 rounded-full bg-lotus/20 px-1.5 py-0.5 text-[10px] font-bold text-lotus">{t("alwaysOpen")}</span> : null}
           </p>
         </div>

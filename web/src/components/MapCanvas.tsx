@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState, type RefObject } from "react";
 import Map, { Layer, Marker, NavigationControl, Popup, Source, type MapRef } from "react-map-gl/maplibre";
-import type { FeatureCollection } from "geojson";
+import type { Feature, FeatureCollection } from "geojson";
 import type { FilterSpecification } from "maplibre-gl";
 import { CITIES, type City } from "@shared/cities";
+import type { LatLng } from "@shared/overpass";
 import type { Place } from "@shared/places";
 import { useTranslation } from "react-i18next";
+import { DARK_STYLE, LIGHT_STYLE } from "../lib/mapStyle";
 import { installPinIcons } from "../lib/pins";
+import { AreaDraw } from "./AreaDraw";
 import { PlaceCard } from "./PlaceCard";
-
-const LIGHT_STYLE = "https://tiles.openfreemap.org/styles/liberty";
-const DARK_STYLE = "https://tiles.openfreemap.org/styles/dark";
 
 type Props = {
   mapRef: RefObject<MapRef | null>;
@@ -30,6 +30,10 @@ type Props = {
   onSelectPlace: (place: Place) => void;
   onClearPlace: () => void;
   onShared: (kind: "shared" | "copied") => void;
+  drawing: boolean;
+  customArea: LatLng[] | null;
+  onArea: (points: LatLng[]) => void;
+  onAreaReject: (reason: "open" | "tiny") => void;
 };
 
 export function MapCanvas({
@@ -45,10 +49,17 @@ export function MapCanvas({
   onSelectPlace,
   onClearPlace,
   onShared,
+  drawing,
+  customArea,
+  onArea,
+  onAreaReject,
 }: Props) {
   const { i18n } = useTranslation();
   const language = i18n.resolvedLanguage?.startsWith("vi") ? "vi" : "en";
   const [boundaries, setBoundaries] = useState<FeatureCollection | null>(null);
+  const [mapEpoch, setMapEpoch] = useState(0);
+  const [sketch, setSketch] = useState<[number, number][] | null>(null);
+  const liveSketch = drawing ? sketch : null;
 
   useEffect(() => {
     let cancelled = false;
@@ -107,8 +118,11 @@ export function MapCanvas({
 
   const boundaryFilter: FilterSpecification = city ? ["==", ["get", "id"], city.id] : ["has", "id"];
   const glow = theme === "dark" ? "#f5b942" : "#e39b12";
+  const areaShape = useMemo(() => polygonFeature(customArea), [customArea]);
+  const sketchShape = useMemo(() => lineFeature(liveSketch), [liveSketch]);
 
   return (
+    <div className="relative h-full w-full">
     <Map
       ref={mapRef}
       initialViewState={initialView}
@@ -121,6 +135,7 @@ export function MapCanvas({
           installPinIcons(map);
           map.on("style.load", () => installPinIcons(map));
         }
+        setMapEpoch((value) => value + 1);
         onLoad();
       }}
       onMoveEnd={onMoveEnd}
@@ -249,6 +264,17 @@ export function MapCanvas({
           }}
         />
       </Source>
+      {areaShape ? (
+        <Source id="custom-area" type="geojson" data={areaShape}>
+          <Layer id="custom-area-fill" type="fill" paint={{ "fill-color": glow, "fill-opacity": 0.22 }} />
+          <Layer id="custom-area-line" type="line" paint={{ "line-color": glow, "line-width": 2.5 }} />
+        </Source>
+      ) : null}
+      {sketchShape ? (
+        <Source id="draw-sketch" type="geojson" data={sketchShape}>
+          <Layer id="draw-sketch-line" type="line" paint={{ "line-color": glow, "line-width": 3, "line-dasharray": [1.2, 1] }} />
+        </Source>
+      ) : null}
       {selected ? (
         <Popup
           longitude={selected.lng}
@@ -262,5 +288,23 @@ export function MapCanvas({
         </Popup>
       ) : null}
     </Map>
+    {drawing ? (
+      <AreaDraw mapRef={mapRef} mapEpoch={mapEpoch} onSketch={setSketch} onComplete={onArea} onReject={onAreaReject} />
+    ) : null}
+    </div>
   );
+}
+
+function polygonFeature(points: LatLng[] | null): Feature | null {
+  if (!points || points.length < 3) return null;
+  const ring = points.map(([lat, lng]) => [lng, lat]);
+  const first = ring[0];
+  const last = ring[ring.length - 1];
+  if (first[0] !== last[0] || first[1] !== last[1]) ring.push(first);
+  return { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [ring] } };
+}
+
+function lineFeature(points: [number, number][] | null): Feature | null {
+  if (!points || points.length < 2) return null;
+  return { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: points } };
 }

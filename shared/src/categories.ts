@@ -5,6 +5,7 @@ export const CATEGORY_IDS = [
   "shops",
   "gas",
   "hospitals",
+  "stations",
 ] as const;
 
 export type CategoryId = (typeof CATEGORY_IDS)[number];
@@ -76,6 +77,16 @@ export const CATEGORIES: readonly CategoryDef[] = [
       ["shop", "clothes"],
     ],
   },
+  {
+    id: "stations",
+    color: "#14919b",
+    hoursFilter: false,
+    filters: [
+      ["aeroway", "aerodrome"],
+      ["railway", "station"],
+      ["amenity", "bus_station"],
+    ],
+  },
 ] as const;
 
 export const SEARCH_CATEGORY = "search" as const;
@@ -110,6 +121,7 @@ export const CATEGORY_ORDER: readonly CategoryId[] = [
   "homestays",
   "hotels",
   "shops",
+  "stations",
   "gas",
   "hospitals",
 ];

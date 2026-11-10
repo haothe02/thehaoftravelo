@@ -34,9 +34,9 @@ const intro = {
     zoom: 12.4,
     aliases: ["hanoi", "ha noi", "ha-noi", "thang long"],
     introVi:
-      "Hồ Gươm, phố cổ và bát phở nóng lúc sáng sớm. Hà Nội đẹp khi đi chậm — một ghế vỉa hè, cà phê nhỏ, và tiếng thành phố thở.",
+      "Hà Nội nằm quanh hồ, với 36 phố phường và những quán mở từ rất sớm. Một bát phở, một ly cà phê và vài bước dưới tán cây là đủ để ngày bắt đầu. Chiều xuống, mặt hồ giữ đèn và tiếng người đi dạo.",
     introEn:
-      "Sword Lake, the Old Quarter, and a hot bowl of phở before the city fully wakes. Hanoi rewards an unhurried stool and a slow coffee.",
+      "Hanoi sits around a lake, with the 36 streets of the Old Quarter and shops that open early. A bowl of phở, a coffee, and a short walk under the trees is enough to start the day. By late afternoon the water holds the lights and the sound of people strolling.",
   },
   "ho-chi-minh": {
     nameVi: "TP. Hồ Chí Minh",
@@ -45,9 +45,9 @@ const intro = {
     zoom: 12.6,
     aliases: ["saigon", "sai gon", "hcm", "ho chi minh", "tp hcm", "tp.hcm"],
     introVi:
-      "Sài Gòn ít khi thì thầm. Hẻm nhỏ, cà phê sữa đá, mái tôn bắt nắng. Đi bộ một đoạn, rồi để thành phố kéo bạn vào quán của người ở đây.",
+      "Sài Gòn đông, nóng và nhanh, nhưng bữa trưa của nhiều người vẫn nằm trong hẻm. Cà phê sữa đá, bánh mì và tiếng còi là nhịp quen. Tối đến, thành phố sáng dọc sông và quán mở đến khuya.",
     introEn:
-      "Saigon rarely whispers. Alleys, iced coffee, tin roofs flashing in the sun. Walk a little, then let the city pull you into a neighbourhood place.",
+      "Saigon is crowded, hot, and quick, yet a lot of lunch still happens in the side alleys. Iced coffee, bánh mì, and motorbike horns are the usual beat. At night the river lights up and the kitchens stay open late.",
   },
   "da-nang": {
     nameVi: "Đà Nẵng",
@@ -56,9 +56,9 @@ const intro = {
     zoom: 12.3,
     aliases: ["danang", "da nang"],
     introVi:
-      "Biển dài, cầu đẹp, đồ ăn đêm rất ổn. Tắm buổi sáng, rồi đi dọc sông Hàn khi đèn thành phố vừa lên.",
+      "Đà Nẵng có biển Mỹ Khê dài, sông Hàn và mấy cây cầu bắc ngang phố. Sáng có thể xuống nước, trưa ăn mì Quảng hoặc hải sản, chiều đi dọc bờ sông. Sân bay gần, thành phố dễ đi, đồ ăn đêm khá chắc.",
     introEn:
-      "A long beach, handsome bridges, and night food worth the walk. Swim in the morning, then follow the Hàn River as the lights come on.",
+      "Da Nang has the long Mỹ Khê beach, the Hàn River, and bridges crossing the streets. Morning is for the water, midday for mì Quảng or seafood, afternoon for the riverbank. The airport is close, the city is easy to cross, and the night food is reliable.",
   },
   "hoi-an": {
     nameVi: "Hội An",
@@ -67,9 +67,9 @@ const intro = {
     zoom: 12.7,
     aliases: ["hoian", "hoi an", "faifo"],
     introVi:
-      "Đèn lồng, tường vàng và hẻm mưa. Hội An hợp đi bộ chậm, một tô cao lầu, và nán lại đến khi phố tự thắp đèn.",
+      "Hội An là phố cổ bên sông Thu Bồn, nhà vàng, đèn lồng và đường lát gạch. Đi bộ là đủ: một tô cao lầu, một ổ bánh mì, một quán vắng sau mưa. Tối đến, đèn thắp lên và khu phố cổ hạn chế xe máy.",
     introEn:
-      "Lanterns, ochre walls, and lanes that shine after rain. Walk slowly, eat cao lầu, and stay until the town lights itself.",
+      "Hoi An is an old town on the Thu Bồn, with ochre houses, lanterns, and brick lanes. Walking covers it: a bowl of cao lầu, a bánh mì, a quiet café after rain. At dusk the lanterns come on and motorbikes leave the old streets.",
   },
   hue: {
     nameVi: "Huế",
@@ -78,9 +78,9 @@ const intro = {
     zoom: 13,
     aliases: ["hue", "thua thien"],
     introVi:
-      "Sông Hương, kinh thành, và bữa ăn thanh, hơi chậm. Ăn bún bò, rồi đạp xe dọc bờ sông khi nắng còn dịu.",
+      "Huế nằm hai bên sông Hương, có kinh thành, chùa và bữa ăn thanh. Bún bò Huế, cơm hến và bánh bèo là lối vào đơn giản nhất. Sáng mát, trưa dịu hơn ngoài biển, chiều hợp đạp xe dọc bờ sông.",
     introEn:
-      "The Perfume River, a citadel, and a table that takes its time. Eat bún bò Huế, then cycle the riverbank while the light stays soft.",
+      "Hue spreads along the Perfume River, with a citadel, pagodas, and a careful kitchen. Bún bò Huế, cơm hến, and bánh bèo are the simplest way in. Mornings are cool, middays softer than the coast, and the river path suits a bicycle.",
   },
   "nha-trang": {
     nameVi: "Nha Trang",
@@ -89,9 +89,9 @@ const intro = {
     zoom: 12.8,
     aliases: ["nhatrang", "nha trang"],
     introVi:
-      "Vịnh xanh, hải sản, nắng gần như quanh năm. Một ngày biển, rồi buổi tối đi bộ dọc Trần Phú cho gió mặn vào tóc.",
+      "Nha Trang là một vịnh cong, nước trong phần lớn năm và hải sản dọc bờ. Đường Trần Phú chạy theo biển, dễ đi bộ khi gió chiều lên. Một đảo gần, một lần tắm, rồi bữa tối đơn giản là lịch của nhiều người.",
     introEn:
-      "A bright bay, seafood, and sun most of the year. Give it a full beach day, then an easy evening walk along the shore.",
+      "Nha Trang is a curved bay, clear water for much of the year, and seafood along the shore. Trần Phú follows the beach and is an easy walk once the afternoon breeze starts. A nearby island, a swim, and a simple dinner is the day many people keep.",
   },
   "da-lat": {
     nameVi: "Đà Lạt",
@@ -100,9 +100,9 @@ const intro = {
     zoom: 12.8,
     aliases: ["dalat", "da lat"],
     introVi:
-      "Sương sớm, thông và cà phê trong không khí mát. Đà Lạt dành cho áo khoác mỏng, một con dốc lạc, và ngồi lâu hơn dự định.",
+      "Đà Lạt cao hơn, mát, sương buổi sớm và thông hai bên dốc. Cà phê, bánh căn, rau và dâu là đồ ăn của thành phố này, không phải hải sản. Áo khoác mỏng có ích, và một khúc cua lạc thường mở ra hồ hoặc đồi.",
     introEn:
-      "Pine air, early fog, and coffee that invites a second cup. Cool mornings, a wrong turn up a hill, and staying longer than planned.",
+      "Da Lat sits higher: cool air, morning fog, and pines along the slopes. Coffee, bánh căn, vegetables, and strawberries belong here more than seafood. A light jacket helps, and a wrong turn often opens onto a lake or a hill.",
   },
   "phu-quoc": {
     nameVi: "Phú Quốc",
@@ -111,9 +111,9 @@ const intro = {
     zoom: 11.6,
     aliases: ["phuquoc", "phu quoc"],
     introVi:
-      "Đảo lớn, hoàng hôn rộng, nước đổi màu theo từng bãi. Chọn một bờ biển và ở lại đến khi trời nhuộm cam.",
+      "Phú Quốc là đảo lớn phía tây nam, bãi dài, hoàng hôn rộng và nước đổi màu theo từng bờ. Phía bắc vắng hơn; phía nam có thị trấn Dương Đông và chợ đêm. Ở lại một bãi đến khi trời chuyển cam là đủ cho một ngày.",
     introEn:
-      "A big island, wide sunsets, and water that changes colour from beach to beach. Pick one shore and stay until the sky turns amber.",
+      "Phu Quoc is a large island in the southwest, with long beaches, wide sunsets, and water that changes from shore to shore. The north is quieter; the south has Duong Dong town and a night market. Staying on one beach until the sky turns amber fills a day.",
   },
   "sa-pa": {
     nameVi: "Sa Pa",
@@ -122,9 +122,9 @@ const intro = {
     zoom: 12.6,
     aliases: ["sapa", "sa pa"],
     introVi:
-      "Thị trấn trên sườn núi, ruộng bậc thang, mây lúc ẩn lúc hiện. Sáng lạnh và một bát gì đó nóng là đủ để Sa Pa ở lại trong người.",
+      "Sa Pa là thị trấn trên sườn Hoàng Liên Sơn, sát ruộng bậc thang và các bản. Sáng thường lạnh và có mây, trưa có thể nắng rất rõ. Một bát đồ nóng, rồi đi bộ xuống thung lũng, là nhịp hợp với nơi này.",
     introEn:
-      "A mountain town, terraces cut into the slopes, and cloud that comes and goes. A cold morning and something hot to eat suits it.",
+      "Sa Pa is a town on the Hoàng Liên Sơn slopes, beside terraces and villages. Mornings are often cold and cloudy; midday can turn suddenly bright. Something hot to eat, then a walk down into the valley, fits the place.",
   },
   "ha-long": {
     nameVi: "Hạ Long",
@@ -133,9 +133,9 @@ const intro = {
     zoom: 12.2,
     aliases: ["halong", "ha long", "vinh ha long", "hong gai", "bai chay"],
     introVi:
-      "Vịnh đá vôi ngay trước phố. Hạ Long là một chuyến thuyền, hoàng hôn trên vịnh, và bát hải sản khi lên bờ.",
+      "Hạ Long là thành phố ngay cạnh vịnh đá vôi. Bãi Cháy và Hòn Gai là phố trên bờ; vịnh bắt đầu khi ra thuyền. Hoàng hôn trên nước, rồi một bữa hải sản lúc về, là phần nhiều người nhớ nhất.",
     introEn:
-      "Limestone karsts just beyond the streets. Ha Long is a boat, a sunset on the bay, and seafood once you are back on shore.",
+      "Ha Long is the city beside the karst bay. Bai Chay and Hon Gai are the streets on shore; the bay starts when you board a boat. A sunset on the water, then seafood back on land, is the part most people remember.",
   },
   "ha-giang": {
     nameVi: "Hà Giang",
@@ -144,9 +144,9 @@ const intro = {
     zoom: 13,
     aliases: ["hagiang", "ha giang"],
     introVi:
-      "Đèo cao, đá tai mèo, và những bản trên cung đường cực bắc. Hà Giang dành cho khúc cua chậm, bất ngờ mở ra cả một thung lũng.",
+      "Hà Giang là cửa ngõ cực bắc, đèo cao, đá tai mèo và bản nằm trên sườn. Cung đường mở từng khúc cua, thung lũng hiện ra rất đột ngột. Đi chậm, trời đổi nhanh, và quán nhỏ ven đường thường là chỗ nghỉ đúng.",
     introEn:
-      "High passes, jagged limestone, and villages along the far-north road. Slow curves that suddenly open onto a whole valley.",
+      "Ha Giang is the far-north gate: high passes, jagged limestone, and villages on the slopes. The road opens bend by bend, and a valley appears all at once. Go slowly, the weather changes fast, and a small roadside kitchen is often the right stop.",
   },
 } as const;
 

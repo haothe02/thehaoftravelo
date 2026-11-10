@@ -4,7 +4,7 @@ import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from "@shared/categories"
 import { filterCities, type City } from "@shared/cities";
 import type { Place } from "@shared/places";
 import type { Weather } from "../lib/api";
-import { placeTitle, weatherKey } from "../lib/format";
+import { isStationKind, placeTitle, shownError, weatherKey } from "../lib/format";
 import { WeatherGlyph } from "./WeatherGlyph";
 
 export function Panel({
@@ -29,6 +29,8 @@ export function Panel({
   onFitCity,
   onSelectPlace,
   selectedId,
+  onClearArea,
+  areaActive,
 }: {
   city: City | null;
   places: Place[];
@@ -51,6 +53,8 @@ export function Panel({
   onFitCity: () => void;
   onSelectPlace: (place: Place) => void;
   selectedId: string | null;
+  onClearArea: () => void;
+  areaActive: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage?.startsWith("vi") ? "vi" : "en";
@@ -97,6 +101,18 @@ export function Panel({
               <h1 className="font-display text-3xl leading-tight">{t("homeTitle")}</h1>
               <p className="mt-1 text-sm text-muted dark:text-sand/75">{t("homeHint")}</p>
             </div>
+            {error ? <p className="text-sm text-lotus">{shownError(error, t)}</p> : null}
+            {places.length > 0 ? (
+              <div>
+                <div className="mb-1 flex items-center justify-between">
+                  <h2 className="text-sm font-semibold">{t("areaResults")}</h2>
+                  <button type="button" onClick={onClearArea} className="text-xs font-semibold text-lantern-deep dark:text-amberglow">
+                    {t("clearArea")}
+                  </button>
+                </div>
+                <PlaceList places={places} language={language} unnamed={t("unnamed")} selectedId={selectedId} onSelectPlace={onSelectPlace} />
+              </div>
+            ) : null}
             <ul className="space-y-1" data-testid="city-list">
               {matches.map((item) => (
                 <li key={item.id}>
@@ -209,43 +225,23 @@ export function Panel({
             </div>
 
             {loading ? <p className="text-sm text-muted">{t("loadingPlaces")}</p> : null}
-            {error ? (
-              <p className="text-sm text-lotus">{error === "geo-denied" || error === "geo" ? t(error === "geo" ? "geoUnavailable" : "geoDenied") : error}</p>
-            ) : null}
+            {error ? <p className="text-sm text-lotus">{shownError(error, t)}</p> : null}
 
             <div className="flex items-center justify-between text-xs text-muted dark:text-sand/70">
               <span>{t("placesCount", { count: places.length })}</span>
+              {areaActive ? (
+                <button type="button" onClick={onClearArea} className="font-semibold text-lantern-deep dark:text-amberglow">
+                  {t("clearArea")}
+                </button>
+              ) : null}
               {searchHits.length > 0 ? <span>{t("searchResults")}</span> : null}
             </div>
             {places.length === 0 && !loading ? <p className="text-sm text-muted dark:text-sand/75">{t("noPlaces")}</p> : null}
-            <ul className="space-y-1">
-              {places.map((place) => (
-                <li key={place.id}>
-                  <button
-                    type="button"
-                    onClick={() => onSelectPlace(place)}
-                    className={`flex w-full items-start gap-2 rounded-2xl px-2 py-2 text-left ${
-                      selectedId === place.id ? "bg-sand dark:bg-white/10" : "hover:bg-sand/60 dark:hover:bg-white/5"
-                    }`}
-                  >
-                    <span
-                      className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ background: CATEGORIES.find((item) => item.id === place.category)?.color ?? "#6d5bd0" }}
-                    />
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-semibold">
-                        {placeTitle(place, language, t("unnamed"))}
-                      </span>
-                      <span className="text-xs text-muted dark:text-sand/60">{t(`categories.${place.category}`)}</span>
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <PlaceList places={places} language={language} unnamed={t("unnamed")} selectedId={selectedId} onSelectPlace={onSelectPlace} />
           </>
         )}
 
-        </div>
+      </div>
       <div className="shrink-0 border-t border-sand/80 px-4 py-3 dark:border-white/10">
         <p className="text-xs font-semibold tracking-wide uppercase">{t("emergency")}</p>
         <div className="mt-2 flex gap-2">
@@ -259,5 +255,49 @@ export function Panel({
         <p className="mt-2 text-[11px] leading-relaxed text-muted dark:text-sand/70">{t("credit")}</p>
       </div>
     </aside>
+  );
+}
+
+function PlaceList({
+  places,
+  language,
+  unnamed,
+  selectedId,
+  onSelectPlace,
+}: {
+  places: Place[];
+  language: string;
+  unnamed: string;
+  selectedId: string | null;
+  onSelectPlace: (place: Place) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <ul className="space-y-1">
+      {places.map((place) => (
+        <li key={place.id}>
+          <button
+            type="button"
+            onClick={() => onSelectPlace(place)}
+            className={`flex w-full items-start gap-2 rounded-2xl px-2 py-2 text-left ${
+              selectedId === place.id ? "bg-sand dark:bg-white/10" : "hover:bg-sand/60 dark:hover:bg-white/5"
+            }`}
+          >
+            <span
+              className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
+              style={{ background: CATEGORIES.find((item) => item.id === place.category)?.color ?? "#6d5bd0" }}
+            />
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold">{placeTitle(place, language, unnamed)}</span>
+              <span className="text-xs text-muted dark:text-sand/60">
+                {place.category === "stations" && isStationKind(place.kind)
+                  ? t(`stations.${place.kind}`)
+                  : t(`categories.${place.category}`)}
+              </span>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 }

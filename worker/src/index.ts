@@ -6,14 +6,16 @@ import {
   pointInsideBBox,
   type BBox,
 } from "../../shared/src/bbox.ts";
-import { isCityId } from "../../shared/src/cities.ts";
-import { buildOverpassQuery, parseCategoryList, type OverpassResponse } from "../../shared/src/overpass.ts";
+import { buildBusRouteQuery, busQueryBox, busRoutesFromOverpass } from "../../shared/src/busRoutes.ts";
+import { cityById, isCityId } from "../../shared/src/cities.ts";
+import { buildOverpassPolyQuery, buildOverpassQuery, parseCategoryList, type OverpassResponse } from "../../shared/src/overpass.ts";
 import {
   placesFromNominatim,
   placesFromOverpass,
   type NominatimItem,
   type Place,
 } from "../../shared/src/places.ts";
+import { assessPolygon, parsePolyParam } from "../../shared/src/polygon.ts";
 import { withCors } from "./cors.ts";
 import type { Env } from "./env.ts";
 import { clientIp, error, json, rateLimit } from "./http.ts";
@@ -45,6 +47,9 @@ async function route(request: Request, env: Env, url: URL): Promise<Response> {
   if (request.method === "GET" && pathname === "/api/places") {
     return places(request, url);
   }
+  if (request.method === "GET" && pathname === "/api/bus-routes") {
+    return busRoutes(request, url);
+  }
   if (request.method === "GET" && pathname === "/api/search") {
     return search(request, url);
   }
@@ -67,6 +72,30 @@ async function places(request: Request, url: URL): Promise<Response> {
   const id = url.searchParams.get("id");
   if (id) return placeById(id);
 
+  const categories = parseCategoryList(url.searchParams.get("categories"));
+  if (!categories) return error("bad_categories", "Pick one or more known categories.", 400);
+
+  const poly = parsePolyParam(url.searchParams.get("poly"));
+  if (url.searchParams.has("poly")) {
+    if (!poly) return error("bad_poly", "Draw a closed shape with a few corners.", 400);
+    const problem = assessPolygon(poly);
+    if (problem === "area_outside") {
+      return error("area_outside", "Draw the shape inside Vietnam.", 400);
+    }
+    if (problem === "area_too_large") {
+      return error("area_too_large", "That area is too large for a free search. Draw a smaller shape.", 400);
+    }
+    if (problem === "area_too_small") {
+      return error("area_too_small", "That shape is too small to search. Draw a slightly larger one.", 400);
+    }
+    if (problem) return error("bad_poly", "Draw a closed shape with a few corners.", 400);
+    const query = buildOverpassPolyQuery(poly, categories);
+    const cacheUrl = `https://cache.thehaoftravelo.internal/places?poly=${poly
+      .map(([lat, lng]) => `${lat.toFixed(4)},${lng.toFixed(4)}`)
+      .join(";")}&categories=${categories.join(",")}`;
+    return placesFromQuery(cacheUrl, query);
+  }
+
   const bbox = parseBBox(url.searchParams.get("bbox"));
   if (!bbox) return error("bad_bbox", "bbox must be south,west,north,east.", 400);
   if (!isInsideVietnam(bbox)) {
@@ -75,12 +104,13 @@ async function places(request: Request, url: URL): Promise<Response> {
   if (bboxSpanTooLarge(bbox)) {
     return error("bbox_too_large", "Zoom in a little, then search this area.", 400);
   }
-  const categories = parseCategoryList(url.searchParams.get("categories"));
-  if (!categories) return error("bad_categories", "Pick one or more known categories.", 400);
-
   const normalized = normalizeBBox(bbox);
   const query = buildOverpassQuery(normalized, categories);
   const cacheUrl = `https://cache.thehaoftravelo.internal/places?bbox=${normalized.join(",")}&categories=${categories.join(",")}`;
+  return placesFromQuery(cacheUrl, query);
+}
+
+async function placesFromQuery(cacheUrl: string, query: string): Promise<Response> {
   return cached(cacheUrl, 60 * 60, async () => {
     const payload = (await fetchOverpass(query)) as OverpassResponse;
     if (payload.remark && !payload.elements) {
@@ -91,13 +121,37 @@ async function places(request: Request, url: URL): Promise<Response> {
   });
 }
 
+async function busRoutes(request: Request, url: URL): Promise<Response> {
+  if (rateLimit(`bus:${clientIp(request)}`, 12)) {
+    return error("rate_limited", "Too many bus-route requests. Wait a minute and try again.", 429);
+  }
+  const cityId = url.searchParams.get("city");
+  if (!isCityId(cityId)) return error("bad_city", "Pick one of the launch cities.", 400);
+  const city = cityById(cityId);
+  const bbox = busQueryBox(city);
+  const query = buildBusRouteQuery(bbox);
+  const cacheUrl = `https://cache.thehaoftravelo.internal/bus-routes?city=${cityId}`;
+  return cached(cacheUrl, 6 * 60 * 60, async () => {
+    const payload = (await fetchOverpass(query)) as OverpassResponse;
+    if (payload.remark && !payload.elements) {
+      return error("upstream", "Bus routes did not finish loading. Try again in a moment.", 502);
+    }
+    return json({ routes: busRoutesFromOverpass(payload), attribution: ATTRIBUTION });
+  });
+}
+
 async function placeById(id: string): Promise<Response> {
-  const match = /^(node|way)\/(\d+)$/.exec(id);
-  if (!match) return error("bad_place", "place id must look like node/123 or way/123.", 400);
+  const match = /^(node|way|relation)\/(\d+)$/.exec(id);
+  if (!match) return error("bad_place", "place id must look like node/123, way/123, or relation/123.", 400);
   const [, type, numeric] = match;
   const cacheUrl = `https://cache.thehaoftravelo.internal/place?id=${type}/${numeric}`;
   return cached(cacheUrl, 60 * 60, async () => {
-    const statement = type === "node" ? `node(${numeric}); out tags;` : `way(${numeric}); out center tags;`;
+    const statement =
+      type === "node"
+        ? `node(${numeric}); out tags;`
+        : type === "relation"
+          ? `relation(${numeric}); out center tags;`
+          : `way(${numeric}); out center tags;`;
     const payload = (await fetchOverpass(`[out:json][timeout:20];${statement}`)) as OverpassResponse;
     const found = placesFromOverpass(payload);
     if (!found[0]) return error("not_found", "That place is not in the categories this map shows.", 404);

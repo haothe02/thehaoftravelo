@@ -7,8 +7,9 @@ Launch cities: Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Hội An, Huế, Nha 
 ## What you get
 
 - A Vietnam map with each city drawn as a glowing amber outline. Choosing a city flies there and raises its boundary.
-- Up to ten places in six groups: eat, homestays, hotels, shops, fuel, care. Chips show and hide them.
-- Pins reload only when you tap **Search this area**, open a city, tap **Near me**, or submit a search.
+- Up to ten places in seven groups: eat, homestays, hotels, shops, stations, fuel, care. Stations are public airports, train stations, and bus stations. Chips show and hide them.
+- **Custom area find** draws a shape anywhere in Vietnam (mouse or touch). Releasing near the start searches inside it once. A stroke that does not close is discarded. Shapes wider than about 50 km are refused so Overpass is not asked to time out. Panning is off while the tool is on.
+- Pins reload only when you tap **Search this area**, open a city, tap **Near me**, submit a search, or close a custom shape.
 - Search stays inside the city's bounding box. **Near me** asks for location only after you tap it.
 - A short intro (Vietnamese and English) and today's weather.
 - Place cards with hours, phone, Google Maps directions, and share (the device share sheet on a phone, copy link on a desktop). Hospitals can show a call button and a 24/7 badge.
@@ -16,6 +17,7 @@ Launch cities: Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Hội An, Huế, Nha 
 - Links like `/?city=hoi-an&place=node/123`.
 - Light and dark, Vietnamese and English, remembered in the browser.
 - A feedback note stored in Cloudflare KV.
+- A **Vehicles** page (`?page=vehicles`) with city bus routes from OpenStreetMap, plus links out to Vexere, 12Go, Vietnam Railways, Baolau, the airlines, Google Flights, Grab, Xanh SM, and Be. This site does not sell tickets or show prices.
 
 ## Layout
 
@@ -58,7 +60,9 @@ npm run build     # production build of the site, into web/dist
 
 ## Deploy on the free tier
 
-Do this once, in order. Nothing here asks for a credit card if you stay on the Workers and Pages free plans.
+Pushes to `main` run `.github/workflows/deploy.yml`. That builds the site and deploys Pages project `thehaoftravelo` plus Worker `thehaoftravelo-api`. Before the first run, add repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (the account id is `791478083127616c52330b777a7c6e36`, and it is also in `worker/wrangler.toml`). Add `VITE_CF_BEACON_TOKEN` only when you want analytics; an empty secret leaves the beacon off.
+
+The steps below are the same deploy done by hand. Nothing here asks for a credit card if you stay on the Workers and Pages free plans.
 
 ### 1. Cloudflare account
 
@@ -91,7 +95,7 @@ id = "the id you just got"
 preview_id = "the id you just got"
 ```
 
-`preview_id` is only for `wrangler dev` against the real account. Local `--local` mode ignores it. Using the same id for both is fine for this MVP. The zeros in the repo are placeholders so the public repo contains no live namespace.
+`preview_id` is only for `wrangler dev` against the real account. Local `--local` mode ignores it. The ids in `wrangler.toml` are the live `FEEDBACK` namespace. The API token is not in the repo.
 
 ### 4. Deploy the Worker
 
@@ -148,8 +152,9 @@ The Worker is the only thing that calls Overpass and Nominatim.
 - Upstream calls are spaced about one second apart inside each Worker isolate.
 - A browser is also limited to a few dozen requests a minute; extra requests get HTTP 429.
 - Nominatim is called with `User-Agent: theHaofTravelo/0.1 (thehaoftravelo.pages.dev)` and `Referer: https://thehaoftravelo.pages.dev`.
-- Place queries refuse a box larger than about one degree. Zoom in, then search.
-- The map does not refetch when you pan. **Search this area** is an explicit click.
+- Place queries refuse a box larger than about one degree, and a hand-drawn shape wider than about half a degree or roughly 1,200 km². Zoom in or draw smaller, then search.
+- The map does not refetch when you pan. **Search this area** and closing a drawn shape are explicit actions.
+- City bus routes load only after you open the Vehicles page and a city, then stay cached for six hours. At most 15 routes are drawn, from the area around the city center.
 - Overpass is tried on `overpass-api.de`, then `maps.mail.ru`, then `overpass.openstreetmap.fr` if the first is busy.
 
 Shops are the five useful kinds (convenience, supermarket, marketplace, gift, clothes), not every `shop=*` in the city. Each category returns at most ten places.
@@ -196,12 +201,12 @@ The script reads `scripts/boundaries.json`, writes `web/public/boundaries/<id>.g
 
 Accounts, ratings, Google APIs, offline mode, and per-city marketing pages are intentionally absent. Directions open a normal Google Maps link in a new tab. That is a link, not an API.
 
-The intro paragraphs are placeholder copy for Huy to rewrite. They live in `shared/src/cities.ts`.
+City intros live in `shared/src/cities.ts`. They are short original paragraphs in Vietnamese and English for Huy to review.
 
 ## Known gaps
 
-- The KV ids in `wrangler.toml` are placeholders until you create a namespace.
-- Web Analytics stays off until `VITE_CF_BEACON_TOKEN` is set at build time.
+- Web Analytics stays off until `VITE_CF_BEACON_TOKEN` is set at build time. GitHub Actions passes that secret through when it is present.
+- Pushing to `main` deploys the Worker and the Pages project. The workflow needs repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. The account id is also in `worker/wrangler.toml`. The API token must stay a secret.
 - Public Overpass servers sometimes time out or answer 429. The Worker tries a second and third endpoint, then the site shows a retry message.
 - Opening hours only exist where someone tagged them. The open-now filter says so.
 - Huế and Hạ Long are unions of wards, not one historical relation.

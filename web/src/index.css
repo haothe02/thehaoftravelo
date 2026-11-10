@@ -92,6 +92,15 @@ textarea {
   border-top-color: #2a211c;
 }
 
+.area-draw {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.dark input[type="date"] {
+  color-scheme: dark;
+}
+
 .city-pin {
   position: relative;
   width: 28px;

@@ -6,7 +6,9 @@ import { cityById, type City, type CityId } from "@shared/cities";
 import { buildMapLink, parseMapLink } from "@shared/deeplink";
 import { applyOpenNowFilter } from "@shared/openingHours";
 import type { Place } from "@shared/places";
-import { fetchPlace, fetchPlaces, fetchWeather, postCityOpened, searchPlaces, type Weather } from "../lib/api";
+import type { LatLng } from "@shared/overpass";
+import { assessPolygon, simplifyRing } from "@shared/polygon";
+import { ApiError, fetchPlace, fetchPlaces, fetchPlacesInPolygon, fetchWeather, postCityOpened, searchPlaces, type Weather } from "../lib/api";
 
 export const HOME_VIEW = {
   longitude: 106.15,
@@ -59,6 +61,9 @@ export function useExplorer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [areaDirty, setAreaDirty] = useState(false);
+  const [customArea, setCustomArea] = useState<LatLng[] | null>(null);
+  const [drawing, setDrawing] = useState(false);
+  const [drawNote, setDrawNote] = useState<"open" | "tiny" | null>(null);
   const [weatherState, setWeatherState] = useState<{ cityId: CityId; weather: Weather | null } | null>(null);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -110,13 +115,38 @@ export function useExplorer() {
       bounds.getNorth(),
       bounds.getEast(),
     ];
+    setCustomArea(null);
     setLoading(true);
     setError(null);
     try {
       setPlaces(await fetchPlaces(bbox));
       setAreaDirty(false);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Request failed");
+      setError(explainFailure(cause));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const loadArea = useCallback(async (points: LatLng[]) => {
+    const simplified = simplifyRing(points);
+    const problem = assessPolygon(simplified);
+    if (problem) {
+      setError(problem);
+      setDrawNote(null);
+      return;
+    }
+    setCustomArea(simplified);
+    setDrawing(false);
+    setDrawNote(null);
+    setSearchHits([]);
+    setError(null);
+    setAreaDirty(false);
+    setLoading(true);
+    try {
+      setPlaces(await fetchPlacesInPolygon(simplified));
+    } catch (cause) {
+      setError(explainFailure(cause));
     } finally {
       setLoading(false);
     }
@@ -127,6 +157,7 @@ export function useExplorer() {
   }, [link.city, loadViewport]);
 
   const onMoveEnd = useCallback(() => {
+    if (drawing) return;
     if (intent.current === "load") {
       intent.current = "none";
       void loadViewport();
@@ -141,7 +172,7 @@ export function useExplorer() {
       return;
     }
     if (link.city || hasPlaces.current) setAreaDirty(true);
-  }, [link.city, loadViewport]);
+  }, [drawing, link.city, loadViewport]);
 
   useEffect(() => {
     hasPlaces.current = places.length > 0;
@@ -152,6 +183,8 @@ export function useExplorer() {
       const next = cityById(id);
       setSearchHits([]);
       setSheetExpanded(false);
+      setDrawing(false);
+      setCustomArea(null);
       writeLink(id, null);
       intent.current = "load";
       mapRef.current?.flyTo({
@@ -172,6 +205,8 @@ export function useExplorer() {
     setSearchHits([]);
     setAreaDirty(false);
     setError(null);
+    setCustomArea(null);
+    setDrawing(false);
     writeLink(null, null);
     intent.current = "ignore";
     mapRef.current?.flyTo({ ...HOME_VIEW, padding: mapPadding(), duration: 1100, essential: true });
@@ -214,7 +249,7 @@ export function useExplorer() {
         setSearchHits(hits);
         if (hits[0]) selectPlace(hits[0]);
       } catch (cause) {
-        setError(cause instanceof Error ? cause.message : "Request failed");
+        setError(explainFailure(cause));
       } finally {
         setLoading(false);
       }
@@ -230,6 +265,7 @@ export function useExplorer() {
       return;
     }
     setError(null);
+    setDrawing(false);
     navigator.geolocation.getCurrentPosition(
       (position) => {
         intent.current = "load";
@@ -250,6 +286,7 @@ export function useExplorer() {
   const fitCity = useCallback(() => {
     if (!city) return;
     const wide = window.matchMedia("(min-width: 768px)").matches;
+    setDrawing(false);
     intent.current = "ignore";
     setAreaDirty(true);
     mapRef.current?.fitBounds(
@@ -329,6 +366,9 @@ export function useExplorer() {
     error,
     setError,
     areaDirty,
+    customArea,
+    drawing,
+    drawNote,
     weather,
     sheetExpanded,
     setSheetExpanded,
@@ -349,5 +389,28 @@ export function useExplorer() {
     nearMe,
     fitCity,
     loadViewport,
+    loadArea,
+    toggleDrawing: () => {
+      setDrawing((current) => !current);
+      setDrawNote(null);
+      setError((current) => (current && AREA_CODES.has(current) ? null : current));
+    },
+    rejectArea: (reason: "open" | "tiny") => {
+      setDrawNote(reason);
+      window.setTimeout(() => setDrawNote((current) => (current === reason ? null : current)), 3200);
+    },
+    clearCustomArea: () => {
+      setCustomArea(null);
+      setPlaces([]);
+      setError(null);
+      setAreaDirty(false);
+    },
   };
+}
+
+const AREA_CODES = new Set(["area_too_large", "area_too_small", "area_outside", "bad_poly"]);
+
+function explainFailure(cause: unknown): string {
+  if (cause instanceof ApiError && AREA_CODES.has(cause.code)) return cause.code;
+  return cause instanceof Error ? cause.message : "Request failed";
 }

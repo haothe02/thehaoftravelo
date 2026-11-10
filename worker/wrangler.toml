@@ -1,15 +1,17 @@
 name = "thehaoftravelo-api"
+account_id = "791478083127616c52330b777a7c6e36"
 main = "src/index.ts"
 compatibility_date = "2026-11-01"
 workers_dev = true
 
-# Create with: npx wrangler kv namespace create FEEDBACK
-# Then replace both ids. Local `wrangler dev --local` uses a simulated KV and
-# does not need the real namespace to exist.
+# Production KV for feedback and city-open counters.
+# Local `wrangler dev --local` uses a simulated KV and does not need this namespace.
+# CLOUDFLARE_API_TOKEN stays a GitHub secret; the account id may also be set as
+# CLOUDFLARE_ACCOUNT_ID and overrides this value.
 [[kv_namespaces]]
 binding = "FEEDBACK"
-id = "00000000000000000000000000000000"
-preview_id = "00000000000000000000000000000000"
+id = "b0a266a1dba84d389693cfa373314602"
+preview_id = "b0a266a1dba84d389693cfa373314602"
 
 [vars]
 ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173,https://thehaoftravelo.pages.dev"
