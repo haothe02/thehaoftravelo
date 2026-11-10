@@ -1,0 +1,12 @@
+{
+  "name": "@thehaoftravelo/shared",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "opening_hours": "^3.9.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}
